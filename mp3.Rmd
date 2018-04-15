@@ -1,30 +1,89 @@
 ---
-title: "mp3"
-author: "Lynn Albright"
-date: "4/9/2018"
-output: html_document
+title: "MacLeish Field Station Trail Guide"
+author: "Lynn Albright and Maggie Szlosek"
+date: "15 April 2018"
+output:
+  html_document:
+    code_folding: hide
+    theme: cerulean
+  pdf_document: default
+  
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r include=FALSE, cache=FALSE}
+library(tidyverse)
+library(macleish)
+library(leaflet)
+library(sf)
 ```
 
-## R Markdown
+```{r message=FALSE,warning=FALSE}
+# INITIALIZING DATA
+contours3m <- macleish_layers [["boundary"]] %>%
+  st_intersection(macleish_layers[["contours_3m"]])
+trails <- macleish_layers[["trails"]]
+porc <- trails %>% filter(name=="Porcupine Trail")
+west <- trails %>% filter(name=="Western Loop")
+vern <- trails %>% filter(name=="Vernal Pool Loop")
+east <- trails %>% filter(name=="Eastern Loop")
+eout <- trails %>% filter(name=="Easy Out")
+road <- trails %>% filter(name=="Poplar Hill Road")
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+# SETTING THE CRS EQUAL
+thecrs <- st_crs(macleish_layers[["trails"]], asText = TRUE)
+bound <- st_union(macleish_layers[["boundary"]])
+macmap <- st_convex_hull(bound)
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+# CONTOURS AND ROAD
+macmap <- leaflet() %>%
+  addTiles() %>%
+  addPolylines(data = contours3m, weight = 1,color="darkblue") %>%
+  addPolylines(data = road, weight = 5, color="grey",opacity=0.75) %>%
+  addPolygons(data = bound, weight = 2, color="green",opacity=1, fillOpacity = 0.1) %>%
+  
+# TRAILS
+  addPolylines(data = porc, weight = 3, color="magenta",opacity=0.75) %>%
+  addPolylines(data = west, weight = 3, color="orange",opacity=0.75) %>%
+  addPolylines(data = vern, weight = 3, color="yellow",opacity=0.75) %>%
+  addPolylines(data = east, weight = 3, color="red",opacity=0.75) %>%
+  addPolylines(data = eout, weight = 3, color="purple",opacity=0.75) %>%
 
-```{r cars}
-summary(cars)
+# LEGEND
+  addLegend("bottomleft", 
+    colors =c("orange",  "red", "yellow", "magenta", "purple","darkblue","grey"),
+    labels= c("West Loop", "East Loop","Vernal Pool Loop","Porcupine Trail", "Easy Outs for West Loop","Contour Lines (Not a Trail)","Poplar Hill Road"),
+    title= "MacLeish Field Station Trail Guide",
+    opacity = 1)
+
+# CALCULATING INTERSECTIONS
+#The "sum" function arguments taken partially from 
+#stackoverflow.com/questions/2190756/how-to-count-true-values-in-a-logical-vector
+#Many thanks to Stack Overflow user "Marek".
+vernint <- sum(st_intersects(contours3m,vern,sparse=FALSE), na.rm=TRUE) # 
+westint <- sum(st_intersects(contours3m,west,sparse=FALSE), na.rm=TRUE)
+eastint <- sum(st_intersects(contours3m,east,sparse=FALSE), na.rm=TRUE)
+porcint <- sum(st_intersects(contours3m,porc,sparse=FALSE), na.rm=TRUE)
+
+#CALCULATING TRAIL LENGTHS
+westlen <- sum(st_length(west))
+eastlen <- sum(st_length(east))
+vernlen <- sum(st_length(vern))
+porclen <- sum(st_length(porc))
+
+# CALCULATING DIFFICULTY LEVELS
+# To do.
+
+macmap
 ```
 
-## Including Plots
+We calculated the lengths and number of times each trail intersects a contour line. In topographic maps, when lines are closer together, it indicates a steeper slope. The West Loop crosses `r westint` contour lines and is `r westlen` meters long. East Loop crosses `r eastint` times, and is `r eastlen` meters in length. The Vernal Pool Loop only crosses `r vernint` times, and is just `r vernlen` meters long. The Porcupine Trail crosses `r porcint` times, and is `r porclen` meters. 
 
-You can also embed plots, for example:
+As far as calculating the difficulty level, we are as of yet undecided on an appropriate formula. 
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+TODO: 
+writeup
+calculations
+add difficulty levels to legend?
+  color code by difficulty?
+    would have to be hardcoded
+prettify the knitr
