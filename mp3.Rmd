@@ -1,11 +1,11 @@
 ---
-title: "MacLeish Field Station Trail Guide"
+title: "Trail Difficulties at MacLeish Field Station"
 author: "Lynn Albright and Maggie Szlosek"
 date: "15 April 2018"
 output:
   html_document:
     code_folding: hide
-    theme: cerulean
+    theme: cosmo
   pdf_document: default
   
 ---
@@ -55,6 +55,8 @@ macmap <- leaflet() %>%
     title= "MacLeish Field Station Trail Guide",
     opacity = 1)
 
+```
+```{r message=FALSE,warning=FALSE}
 # CALCULATING INTERSECTIONS
 #The "sum" function arguments taken partially from 
 #stackoverflow.com/questions/2190756/how-to-count-true-values-in-a-logical-vector
@@ -71,19 +73,60 @@ vernlen <- sum(st_length(vern))
 porclen <- sum(st_length(porc))
 
 # CALCULATING DIFFICULTY LEVELS
-# To do.
+westfin <- sum(westint*4, westlen)
+vernfin <- sum(vernint*4, vernlen)
+eastfin <- sum(eastint*4, eastlen)
+porcfin <- sum(porcint*4, porclen)
 
+# DRAW FINAL MAP
 macmap
-```
+```                                  
+<br>
+Macleish Field Station has a variety of resources available to members of the Smith community, among them five trails for visitors to wander. However, MacLeish currently has no system in place to rate the difficulty of a trail, which means that visitors have no way of knowing how long walking the trail will take, if they are physically capable of completing the full trail, or if they would rather take one of the other trails that is more suited to their personal needs. In order to rectify this, we have created a formula in order to compare trails, and ranked each trail based on the numerical difficulty value it has been given. The full project can be found on Github.[^1]  
 
-We calculated the lengths and number of times each trail intersects a contour line. In topographic maps, when lines are closer together, it indicates a steeper slope. The West Loop crosses `r westint` contour lines and is `r westlen` meters long. East Loop crosses `r eastint` times, and is `r eastlen` meters in length. The Vernal Pool Loop only crosses `r vernint` times, and is just `r vernlen` meters long. The Porcupine Trail crosses `r porcint` times, and is `r porclen` meters. 
+[^1]: [Here is the full project on Github](https://github.com/lwalbright/miniproj3)
 
-As far as calculating the difficulty level, we are as of yet undecided on an appropriate formula. 
+
+The ranking is based on two factors, the length of the trail and the elevation change of the trail. Elevation was computed from the MacLeish contour map data, in which each line indicates a 3 meter change in elevation. We calculated "elevation" as the total number of contour lines crossed by each trail. Because a steep walk is generally harder than a long walk, we decided to weight the elevation significantly against the length. Lengths were calculated from the MacLeish trail map data. The difficulties were calculated as follows:         
+
+$difficulty = length + 4 * elevation$   
+                
+From this formula, we get the following difficulty scores: 
+
+
+Trail Name    | Difficulty Score
+------------- | -------------
+West Loop     | `r round(westfin, 2)`
+East Loop     | `r round(eastfin, 2)`
+Vernal Pool Loop | `r round(vernfin, 2)` 
+Porcupine Trail | `r round(porcfin, 2)` 
+                 
+We then took these scores and assigned difficulties to them. "Difficult"" is any score greater than 1500, "Moderate" is any score greater than or equal to 500, and "Easy" is any score less than 500. By applying this formula, we found the following:          
+              
+Trail Name    | Difficulty
+------------- | -------------
+West Loop     | Moderate
+East Loop     | Difficult
+Vernal Pool Loop | Easy
+Porcupine Trail | Moderate
+
+                    
+The formula, however, is not perfect. Particularly with the East Loop, the trail follows and repeatedly crosses the same contour line, which indicates a relatively flat section of the trail. Our calculations did not control for repeated crossings of the same line (as that would, in most cases, be important to count). This did have the result of skewing our data somewhat. However, the East Loop Trail is also the longest trail, and includes several steeper sections, which makes it our hardest trail regardless. Furthermore, East Loop is the only trail to feature "Easy Outs", which allow hikers to shorten their hike by cutting out large sections of the trail. If visitors choose to make use of these features, they would find the East Loop considerably easier.            
+
+Providing hikers with this information shouldn't be particularly hard, as the only thing that would need to be added are posted signs with the difficulty levels and a brief overview of each trail. The cost and time required to add these signs would be negligible compared to their potential benefit. These signs could also include any noteworthy points of interest on each trail, the average slope, and many other details that were likely calculated by other project groups. Assuming MacLeish already has posted signs, an additional sign could easily be appended to each signpost giving further trail information. The cost would depend largely on the type of weatherproofing MacLeish decides to apply to these signs. The goal should be to maximize the amount of easily understandable information available to MacLeish visitors.                
+
+This solution would not take very long to implement. Even including the time it would take to design the new signs, they could be made and posted within a fairly short timeframe. MacLeish Field Station could easily install temporary laminated signs on printer paper in the meantime. The environmental impact would depend largely on how MacLeish decides to make and display the signs. Obviously they would need to consider the environmental safety of adding such a sign, as any modifications to the natural landscape can affect the flora and fauna therein. After the signs are made and their locations decided, installation would be a simple (but worthwhile) endeavor.                         
 
 TODO: 
-writeup
-calculations
-add difficulty levels to legend?
-  color code by difficulty?
-    would have to be hardcoded
-prettify the knitr
+remove TODO section
+split up code chunks
+be super anal about code neatness
+add writeup
+  EDIT writeup
+  clear concise desc of data used
+  reporting at least one actionable recommendation (what should Smith DO with your findings?)
+  a short discussion on the resources necessary to implement your recommendation:
+footnote with Github
+issues tab?
+  
+
