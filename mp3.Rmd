@@ -116,17 +116,3 @@ The formula, however, is not perfect. Particularly with the East Loop, the trail
 Providing hikers with this information shouldn't be particularly hard, as the only thing that would need to be added are posted signs with the difficulty levels and a brief overview of each trail. The cost and time required to add these signs would be negligible compared to their potential benefit. These signs could also include any noteworthy points of interest on each trail, the average slope, and many other details that were likely calculated by other project groups. Assuming MacLeish already has posted signs, an additional sign could easily be appended to each signpost giving further trail information. The cost would depend largely on the type of weatherproofing MacLeish decides to apply to these signs. The goal should be to maximize the amount of easily understandable information available to MacLeish visitors.                
 
 This solution would not take very long to implement. Even including the time it would take to design the new signs, they could be made and posted within a fairly short timeframe. MacLeish Field Station could easily install temporary laminated signs on printer paper in the meantime. The environmental impact would depend largely on how MacLeish decides to make and display the signs. Obviously they would need to consider the environmental safety of adding such a sign, as any modifications to the natural landscape can affect the flora and fauna therein. After the signs are made and their locations decided, installation would be a simple (but worthwhile) endeavor.                         
-
-TODO: 
-remove TODO section
-split up code chunks
-be super anal about code neatness
-add writeup
-  EDIT writeup
-  clear concise desc of data used
-  reporting at least one actionable recommendation (what should Smith DO with your findings?)
-  a short discussion on the resources necessary to implement your recommendation:
-footnote with Github
-issues tab?
-  
-
